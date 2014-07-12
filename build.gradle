@@ -1,0 +1,9 @@
+apply plugin: 'java'
+
+repositories {
+  maven { url 'http://repo.bukkit.org/content/repositories/releases' }
+}
+
+dependencies {
+  compile "org.bukkit:craftbukkit:1.7.2-R0.3"
+}

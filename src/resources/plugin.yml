@@ -1,0 +1,43 @@
+name: EducationExtender
+main: tv.usasvideos.mcplugins.education.EducationExtender
+version: 1.1
+discription: This Plugin extends the education in direction of mincraft.
+load: POSTWORLD
+authers: [dragon-map]
+website: https://github.com/dragon-map/EducationExtender/
+database: false
+depend: []
+softdepend: []
+loadbefore: []
+prefix: Teleport
+default-permission: op
+commands:
+   setfly:
+      description: Toggle your flymode.
+      usage: /<command> <Player|all> <on|off>
+      aliases: [flymode,fm,sf]
+   name:
+      description: Name a player.
+      usage: /<command> <Player> [<New Name>]
+      aliases: [nick,nickname,rename,unname,nickoff]
+   job:
+      description: Distribute tasks.
+      usage: /<command> <Player|all> <Msg>
+      aliases: [bar,alert,evermsg]
+   teachercommands:
+      description: Read all teachercommands.
+      usage: /<command>
+      aliases: [teacherscommand,teachercommand,teacherscommands,teachcom,tc,teacher,teacherhelp]
+   studentcommands:
+      description: Read all studentcommands.
+      usage: /<command>
+      aliases: [studentscommand,studentcommand,studentscommands,studcom,sc,stud,studenthelp]
+   addeducation:
+      description: Part into groups.
+      usage: /<command> <Group> <Player>
+      aliases: [edu,addedu,addschool,adducation]
+   educheck:
+      description: Check if players are in a group like teachers or students.
+      usage: /<command> <Player>
+      aliases: [schoolcheck,edutest,educationcheck,check,test]
+permissions:
