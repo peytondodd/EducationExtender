@@ -1,4 +1,4 @@
 /.gradle
 /.nb-gradle
+/.nb-gradle-properties
 /build
-/src/main/java/tv/usasvideos/mcplugins/education/EducationExtenderInGerman.java
