@@ -9,7 +9,7 @@ database: false
 depend: []
 softdepend: []
 loadbefore: []
-prefix: Teleport
+prefix: Education
 default-permission: op
 commands:
    setfly:
