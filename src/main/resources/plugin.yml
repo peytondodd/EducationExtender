@@ -10,7 +10,7 @@ depend: []
 softdepend: []
 loadbefore: []
 prefix: Education
-default-permission: op
+default-permission: true
 commands:
    setfly:
       description: Toggle your flymode.
@@ -40,4 +40,8 @@ commands:
       description: Check if players are in a group like teachers or students.
       usage: /<command> <Player>
       aliases: [schoolcheck,edutest,educationcheck,check,test]
+   locale:
+      description: Set locale for another language.
+      usage: /<command> <Locale>
+      aliases: [changelocale,setlocale]
 permissions:
