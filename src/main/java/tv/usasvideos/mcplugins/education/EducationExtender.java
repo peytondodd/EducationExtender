@@ -1,7 +1,11 @@
-package tv.usasvideos.mcplugins.educationextender;
+package tv.usasvideos.mcplugins.education;
 
-import java.util.List;
+import java.util.Locale;
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
+
 import java.util.logging.Level;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,13 +25,15 @@ public class EducationExtender extends JavaPlugin implements Listener {
 
     private List<String> teachers;
     private List<String> students;
+    private Locale locale = new Locale("de", "DE");
+    private ResourceBundle messagebundle = ResourceBundle.getBundle("messages", locale);
 
     @Override
     public void onEnable() {
         getServer().getPluginManager().registerEvents(this, this);
         teachers = getConfig().getStringList("teachers");
         students = getConfig().getStringList("students");
-        this.getLogger().log(Level.INFO, "is enabled!");
+        this.getLogger().log(Level.INFO, messagebundle.getString("enable.info"));
     }
 
     @Override
@@ -35,7 +41,7 @@ public class EducationExtender extends JavaPlugin implements Listener {
         getConfig().set("teachers", teachers);
         getConfig().set("students", students);
         saveConfig();
-        this.getLogger().log(Level.INFO, "is disabled!");
+        this.getLogger().log(Level.INFO, messagebundle.getString("disable.info"));
     }
 
     @Override
@@ -47,12 +53,12 @@ public class EducationExtender extends JavaPlugin implements Listener {
             Player flyer = Bukkit.getServer().getPlayer(args[0]);
             if (args[1].equalsIgnoreCase("off")) {
                 flyer.setAllowFlight(false);
-                this.getLogger().log(Level.INFO, "{0} is''nt it allowed to fly.", flyer.getName());
-                flyer.sendMessage(ChatColor.GREEN + "You are not allowed to fly.");
+                this.getLogger().log(Level.INFO, messagebundle.getString("fly.disallowed.info"), flyer.getName());
+                flyer.sendMessage(ChatColor.GREEN + messagebundle.getString("fly.disallowed.message"));
             } else {
                 flyer.setAllowFlight(true);
-                this.getLogger().log(Level.INFO, "{0} is it allowed to fly.", flyer.getName());
-                flyer.sendMessage(ChatColor.GREEN + "Now you are allowed to fly.");
+                this.getLogger().log(Level.INFO, messagebundle.getString("fly.allowed.info"), flyer.getName());
+                flyer.sendMessage(ChatColor.GREEN + messagebundle.getString("fly.disallowed.message"));
             }
         }
         if (cmd.getName().equalsIgnoreCase("name")) {
@@ -63,13 +69,13 @@ public class EducationExtender extends JavaPlugin implements Listener {
                 Player named = Bukkit.getServer().getPlayer(args[0]);
                 named.setDisplayName(named.getName());
                 named.setPlayerListName(named.getName());
-                this.getLogger().log(Level.INFO, "{0}''s name is now {1}.", new Object[]{named.getName(), named.getDisplayName()});
+                this.getLogger().log(Level.INFO, messagebundle.getString("name.newname.info"), new Object[]{named.getName(), named.getDisplayName()});
             }
             if (args.length == 2) {
                 Player named = Bukkit.getServer().getPlayer(args[0]);
                 named.setDisplayName(args[1]);
                 named.setPlayerListName(args[1]);
-                this.getLogger().log(Level.INFO, "{0} is now his own name.", named.getName());
+                this.getLogger().log(Level.INFO, messagebundle.getString("name.rename.info"), named.getName());
             }
         }
         if (cmd.getName().equalsIgnoreCase("job") && args.length > 2) {
@@ -79,17 +85,17 @@ public class EducationExtender extends JavaPlugin implements Listener {
             if (args[0].equalsIgnoreCase("all")) {
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     Bukkit.broadcastMessage(getMessage(args, 2));
-                    this.getLogger().log(Level.INFO, "{0} set a new job for every student: {1}", new Object[]{sender.getName(), getMessage(args, 2)});
+                    this.getLogger().log(Level.INFO, messagebundle.getString("job.forall.info"), new Object[]{sender.getName(), getMessage(args, 2)});
                 }
             } else {
                 Player jobbed = Bukkit.getServer().getPlayer(args[0]);
                 Bukkit.broadcastMessage(getMessage(args, 2));
-                this.getLogger().log(Level.INFO, "{0} set {1}''s job to {2}", new Object[]{sender.getName(), jobbed.getName(), getMessage(args, 2)});
+                this.getLogger().log(Level.INFO, messagebundle.getString("job.forone.info"), new Object[]{sender.getName(), jobbed.getName(), getMessage(args, 2)});
             }
         }
         if (cmd.getName().equalsIgnoreCase("gamemode") && sender instanceof Player && students.contains(sender.getName())) {
-            this.getLogger().log(Level.INFO, "{0} has no permission to change its gamemode.", sender.getName());
-            sender.sendMessage(ChatColor.GREEN + "A student is not permitted to change his gamemode!");
+            this.getLogger().log(Level.INFO, messagebundle.getString("gamemode.nopermission.info"), sender.getName());
+            sender.sendMessage(ChatColor.GREEN + messagebundle.getString("gamemode.nopermission.student.message"));
             return false;
 
         }
@@ -97,17 +103,17 @@ public class EducationExtender extends JavaPlugin implements Listener {
             sender.sendMessage(ChatColor.GREEN + "---------- Teachercommands (1/1) ----------");
             sender.sendMessage(ChatColor.GREEN + "/teachercommands, /setfly <Player> <on|off>, /name <Player> [<Name>]");
             sender.sendMessage(ChatColor.GREEN + "/gamemode <Mode> [<Player>], /job <Player|all> <Msg>, /studentcommands");
-            this.getLogger().log(Level.INFO, "The teacher {0} read the teachercommandhelppage.", sender.getName());
+            this.getLogger().log(Level.INFO, messagebundle.getString("commandlist.teacher.teacherrun.info"), sender.getName());
         }
         if (cmd.getName().equalsIgnoreCase("studentcommands") && sender instanceof Player) {
             if (students.contains(sender.getName()) || teachers.contains(sender.getName())) {
                 sender.sendMessage(ChatColor.GREEN + "---------- Studentcommands (1/1) ----------");
                 sender.sendMessage(ChatColor.GREEN + "/studentcommands");
                 if (students.contains(sender.getName())) {
-                    this.getLogger().log(Level.INFO, "The student {0} read the studentcommandhelppage.", sender.getName());
+                    this.getLogger().log(Level.INFO, messagebundle.getString("commandlist.student.studentrun.info"), sender.getName());
                 }
                 if (teachers.contains(sender.getName())) {
-                    this.getLogger().log(Level.INFO, "The teacher {0} read the studentcommandhelppage.", sender.getName());
+                    this.getLogger().log(Level.INFO, messagebundle.getString("commandlist.student.teacherrun.info"), sender.getName());
                 }
             }
         }
@@ -120,30 +126,30 @@ public class EducationExtender extends JavaPlugin implements Listener {
             boolean sr = students.remove(added.getName());
             if (args[0].equalsIgnoreCase("teacher")) {
                 teachers.add(added.getName());
-                added.sendMessage(ChatColor.GREEN + "Now you are a teacher!");
-                this.getLogger().log(Level.INFO, "{0} is now a teacher.", added.getName());
+                added.sendMessage(ChatColor.GREEN + messagebundle.getString("educationstate.change.teacher.message"));
+                this.getLogger().log(Level.INFO, messagebundle.getString("educationstate.change.teacher.info"), added.getName());
                 return true;
             }
             if (args[0].equalsIgnoreCase("student")) {
                 students.add(added.getName());
-                added.sendMessage(ChatColor.GREEN + "Now you are a student!");
-                this.getLogger().log(Level.INFO, "{0} is now a student.", added.getName());
+                added.sendMessage(ChatColor.GREEN + messagebundle.getString("educationstate.change.student.message"));
+                this.getLogger().log(Level.INFO, messagebundle.getString("educationstate.change.student.info"), added.getName());
                 return true;
             }
             if (args[0].equalsIgnoreCase("remove")) {
-                added.sendMessage(ChatColor.GREEN + "You are out of the educationprogram!");
-                this.getLogger().log(Level.INFO, "{0} is no longer a teacher or a student.", added.getName());
+                added.sendMessage(ChatColor.GREEN + messagebundle.getString("educationstate.change.remove.message"));
+                this.getLogger().log(Level.INFO, messagebundle.getString("educationstate.change.remove.info"), added.getName());
                 return true;
             }
             if (tr) {
                 teachers.add(added.getName());
-                added.sendMessage(ChatColor.GREEN + "You will remain a teacher!");
-                this.getLogger().log(Level.INFO, "{0} is still a teacher.", added.getName());
+                added.sendMessage(ChatColor.GREEN + messagebundle.getString("educationstate.stay.teacher.message"));
+                this.getLogger().log(Level.INFO, messagebundle.getString("educationstate.stay.teacher.info"), added.getName());
             }
             if (sr) {
                 students.add(added.getName());
-                added.sendMessage(ChatColor.GREEN + "You will remain a student!");
-                this.getLogger().log(Level.INFO, "{0} is still a student.", added.getName());
+                added.sendMessage(ChatColor.GREEN + messagebundle.getString("educationstate.stay.student.message"));
+                this.getLogger().log(Level.INFO, messagebundle.getString("educationstate.stay.student.info"), added.getName());
             }
         }
         if (cmd.getName().equalsIgnoreCase("educheck")) {
@@ -155,29 +161,31 @@ public class EducationExtender extends JavaPlugin implements Listener {
             }
             int groupnum = 0;
             String groupnames = null;
-            this.getLogger().log(Level.INFO, "{0} tested if {1} is in a group.", new Object[]{sender.getName(), args[0]});
+            this.getLogger().log(Level.INFO, messagebundle.getString("check.info"), new Object[]{sender.getName(), args[0]});
             if (students.contains(args[0])) {
                 groupnum += 1;
-                groupnames = "a student";
-                this.getLogger().log(Level.INFO, "{0} is a student.", args[0]);
+                groupnames = messagebundle.getString("check.student.namestring");
+                this.getLogger().log(Level.INFO, messagebundle.getString("check.student.info"), args[0]);
             }
             if (teachers.contains(args[0])) {
                 if (groupnum > 0) {
-                    groupnames = groupnames + " and a teacher";
+                    groupnames = groupnames + " " + messagebundle.getString("check.teacher.also.namestring");
                 groupnum += 1;
-                    this.getLogger().log(Level.INFO, "{0} is also a teacher.", args[0]);
+                    this.getLogger().log(Level.INFO, messagebundle.getString("check.teacher.also.info"), args[0]);
                 } else {
-                    groupnames = "a teacher";
+                    groupnames = messagebundle.getString("check.teacher.namestring");
                 groupnum += 1;
-                    this.getLogger().log(Level.INFO, "{0} is a teacher.", args[0]);
+                    this.getLogger().log(Level.INFO, messagebundle.getString("check.teacher.info"), args[0]);
                 }
             }
             if (groupnum == 0) {
-                sender.sendMessage(ChatColor.GREEN + args[0] + " ist in keiner Gruppe.");
-                this.getLogger().log(Level.INFO, "{0} is in no group.", args[0]);
+                MessageFormat nogroupmessageformat = new MessageFormat(messagebundle.getString("check.nogroup.message"));
+                sender.sendMessage(ChatColor.GREEN + nogroupmessageformat.format(args[0]));
+                this.getLogger().log(Level.INFO, messagebundle.getString("check.nogroup.info"), args[0]);
                 return true;
             }
-            sender.sendMessage(ChatColor.GREEN + args[0] + " ist " + groupnames + ".");
+                MessageFormat ingroupmessageformat = new MessageFormat(messagebundle.getString("check.nogroup.message"));
+                sender.sendMessage(ChatColor.GREEN + ingroupmessageformat.format(new Object[]{args[0], groupnames}));
         }
         return true;
     }
@@ -192,25 +200,25 @@ public class EducationExtender extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
-        String welcome = null;
-        String info = null;
         if (teachers.contains(e.getPlayer().getName()) || students.contains(e.getPlayer().getName())) {
             if (teachers.contains(e.getPlayer().getName())) {
-                e.setJoinMessage(ChatColor.GREEN + "A teacher named " + e.getPlayer().getName() + " is now online!");
-                welcome = "You were classified by EducationExtender as a teacher, so you can give execises and run all teachercommands! You find the list of all teachercommand at /teachercommands";
-                info = "As a teacher you are in the creativemode and you can fly. Your students are also creative (we hope it so ;D), but they are NOT allowed to fly.";
+                MessageFormat teacheronlinemessageformat = new MessageFormat(messagebundle.getString("login.teacher.login.message"));
+                MessageFormat teacherwelcomemessageformat = new MessageFormat(messagebundle.getString("login.teacher.welcome.message"));
+                e.setJoinMessage(ChatColor.GREEN + teacheronlinemessageformat.format(e.getPlayer().getName()));
+                e.getPlayer().sendMessage(ChatColor.GREEN + teacherwelcomemessageformat.format(e.getPlayer().getName()));
+                e.getPlayer().sendMessage(ChatColor.GREEN + messagebundle.getString("login.teacher.info.message"));
                 e.getPlayer().setGameMode(GameMode.CREATIVE);
                 e.getPlayer().setAllowFlight(true);
             }
             if (students.contains(e.getPlayer().getName())) {
-                e.setJoinMessage(ChatColor.GREEN + "The student " + e.getPlayer().getName() + " is online!");
-                welcome = "You are a student, you can run run commands that exist specifically for your same. See therefore /studentcommands";
-                info = "As a student, you are not permitted to fly, but you are in creativemode and can you every singel block.";
+                MessageFormat studentonlinemessageformat = new MessageFormat(messagebundle.getString("login.student.login.message"));
+                MessageFormat studentwelcomemessageformat = new MessageFormat(messagebundle.getString("login.student.welcome.message"));
+                e.setJoinMessage(ChatColor.GREEN + studentonlinemessageformat.format(e.getPlayer().getName()));
+                e.getPlayer().sendMessage(ChatColor.GREEN + studentwelcomemessageformat.format(e.getPlayer().getName()));
+                e.getPlayer().sendMessage(ChatColor.GREEN + messagebundle.getString("login.student.info.message"));
                 e.getPlayer().setGameMode(GameMode.CREATIVE);
                 e.getPlayer().setAllowFlight(false);
             }
-            e.getPlayer().sendMessage(ChatColor.GREEN + e.getPlayer().getName() + ", " + welcome + ".");
-            e.getPlayer().sendMessage(ChatColor.GREEN + info);
         }
     }
 
